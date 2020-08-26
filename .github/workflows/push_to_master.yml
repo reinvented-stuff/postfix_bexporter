@@ -35,6 +35,15 @@ jobs:
     - name: Build
       run: make build
 
+    - name: Generate changelog
+      id: genchangelog
+      run: |
+        current_tag=$(git tag)
+        changelog_filename=".changelog"
+        git log --format=%B "${current_tag}"..HEAD | tee "${changelog_filename}"
+        
+        echo "::set-output name=changelog::$(cat "${changelog_filename}")"
+
     - name: Create a new tag
       run: |
         curl --request POST --url https://api.github.com/repos/${{ github.repository }}/git/tags \
@@ -58,7 +67,9 @@ jobs:
       with:
         tag_name: ${{steps.readversionfile.outputs.desiredversion}}
         release_name: Release ${{steps.readversionfile.outputs.desiredversion}}
-        body: Automatically generated release
+        body: |
+          Automatically generated release
+          ${{steps.genchangelog.outputs.changelog}}
         draft: false
         prerelease: false
 
