@@ -37,12 +37,21 @@ jobs:
 
     - name: Generate changelog
       id: genchangelog
+      shell: bash
       run: |
+        echo "Checking tags..."
+        git tag
         current_tag=$(git tag | tail -1)
         changelog_filename=".changelog"
         echo "current_tag=$current_tag"
 
+        echo "Listing all changes..."
+        git log --format=%B
+
+        echo "Listing current changes..."
         git log --format=%B "$current_tag"..HEAD | tee "$changelog_filename"
         
+        echo "Changelog file..."
+        cat .changelog
         echo "::set-output name=changelog::$(cat "$changelog_filename")"
 
