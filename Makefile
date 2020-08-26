@@ -15,7 +15,7 @@ $(TARGZ_FILENAME):
 build:
 	mkdir -vp "$(PROGNAME_VERSION)"
 	cp -v $(TARGZ_CONTENTS) "$(PROGNAME_VERSION)/"
-	sed -i '' -e "s/VERSION=.*/VERSION='$(VERSION)'/" "$(PROGNAME_VERSION)/postfix_bexporter.sh"
+	sed -i"" -e "s/VERSION=.*/VERSION='$(VERSION)'/" "$(PROGNAME_VERSION)/postfix_bexporter.sh"
 
 compress: $(TARGZ_FILENAME)
 
