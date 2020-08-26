@@ -1,11 +1,11 @@
-include version.sh
+VERSION := $(shell cat .version )
 
 PROGNAME = postfix_bexporter
-PROGNAME_VERSION = $(PROGNAME)-$(version)
-TARGZ_FILENAME = $(PROGNAME)-$(version).tar.gz
+PROGNAME_VERSION = $(PROGNAME)-$(VERSION)
+TARGZ_FILENAME = $(PROGNAME)-$(VERSION).tar.gz
 TARGZ_CONTENTS = postfix_bexporter.sh README.md Makefile version.sh
 
-DESTDIR = /opt/postfix_bexporter
+PREFIX = /opt/postfix_bexporter
 
 .PHONY: all version build clean install
 
@@ -14,23 +14,21 @@ $(TARGZ_FILENAME):
 
 
 build:
-	mkdir -v "$(PROGNAME_VERSION)"
+	mkdir -vp "$(PROGNAME_VERSION)"
 	cp -v $(TARGZ_CONTENTS) "$(PROGNAME_VERSION)/"
-	sed -i "" -e "s/VERSION=.*/VERSION='$(version)'/" "$(PROGNAME_VERSION)/postfix_bexporter.sh"
+	sed -i "" -e "s/VERSION=.*/VERSION='$(VERSION)'/" "$(PROGNAME_VERSION)/postfix_bexporter.sh"
 
 compress: $(TARGZ_FILENAME)
 
 version:
-	@echo "Version: $(version)"
+	@echo "Version: $(VERSION)"
 
 clean:
-	cd "$(PROGNAME_VERSION)"
-	rm -fv $(TARGZ_CONTENTS)
-	cd ..
-	rm -vf "$(PROGNAME_VERSION)"
+	rm -vfr "$(PROGNAME_VERSION)"
+	rm -vf "$(TARGZ_FILENAME)"
 
 install:
-	install -d $(DESTDIR)
-	install -m 644 postfix_bexporter.sh $(DESTDIR)
-	install -m 644 README.md $(DESTDIR)
+	install -d $(DESTDIR)$(PREFIX)
+	install -m 644 postfix_bexporter.sh $(DESTDIR)$(PREFIX)
+	install -m 644 README.md $(DESTDIR)$(PREFIX)
 	
