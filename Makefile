@@ -3,7 +3,7 @@ VERSION := $(shell cat .version )
 PROGNAME = postfix_bexporter
 PROGNAME_VERSION = $(PROGNAME)-$(VERSION)
 TARGZ_FILENAME = $(PROGNAME)-$(VERSION).tar.gz
-TARGZ_CONTENTS = postfix_bexporter.sh README.md Makefile version.sh
+TARGZ_CONTENTS = postfix_bexporter.sh README.md Makefile .version
 
 PREFIX = /opt/postfix_bexporter
 
@@ -11,7 +11,6 @@ PREFIX = /opt/postfix_bexporter
 
 $(TARGZ_FILENAME):
 	tar -zvcf "$(TARGZ_FILENAME)" "$(PROGNAME_VERSION)"
-
 
 build:
 	mkdir -vp "$(PROGNAME_VERSION)"
