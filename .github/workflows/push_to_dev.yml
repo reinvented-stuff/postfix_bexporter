@@ -44,7 +44,7 @@ jobs:
         echo "Checking tags..."
         git branch
         git tag
-        git git describe --tags
+        git describe --tags
         
         described=$(git describe --tags)
         described_parts=( ${described//-/ } )
