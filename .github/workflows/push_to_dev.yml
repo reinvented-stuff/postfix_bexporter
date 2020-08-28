@@ -13,6 +13,8 @@ jobs:
 
     - name: Check out code
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
     - name: Check if .version file exists
       run: if [[ -f .version ]]; then exit 0; else exit 2; fi
@@ -40,18 +42,26 @@ jobs:
       shell: bash
       run: |
         echo "Checking tags..."
+        git branch
         git tag
-        current_tag=$(git tag | tail -1)
+        git git describe --tags
+        
+        described=$(git describe --tags)
+        described_parts=( ${described//-/ } )
+        current_tag=${described_parts[0]}
+        
         changelog_filename=".changelog"
         echo "current_tag=$current_tag"
 
         echo "Listing all changes..."
-        git log --format=%B
+        git log --format=%B | sort -u
 
         echo "Listing current changes..."
-        git log --format=%B "$current_tag"..HEAD | tee "$changelog_filename"
+        git log --format=%B "$current_tag"..HEAD | sort -u | tee "$changelog_filename"
         
         echo "Changelog file..."
         cat .changelog
         echo "::set-output name=changelog::$(cat "$changelog_filename")"
 
+    - name: Display changelog
+      run: echo "${{steps.genchangelog.outputs.changelog}}"
