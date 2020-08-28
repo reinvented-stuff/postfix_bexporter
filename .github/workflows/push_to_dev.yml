@@ -80,26 +80,31 @@ jobs:
         make compress
 
         # rpmdev-setuptree
-        mkdir rpmbuild
-        mkdir -pv rpmbuild/BUILD rpmbuild/BUILDROOT rpmbuild/RPMS rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SRPMS
+        mkdir /home/runner/rpmbuild
+        mkdir -pv /home/runner/rpmbuild/BUILD
+        mkdir -pv /home/runner/rpmbuild/BUILDROOT
+        mkdir -pv /home/runner/rpmbuild/RPMS
+        mkdir -pv /home/runner/rpmbuild/SOURCES
+        mkdir -pv /home/runner/rpmbuild/SPECS
+        mkdir -pv /home/runner/rpmbuild/SRPMS
         
         ls -la
         
-        cp -v "postfix_bexporter.spec.tpl" rpmbuild/SPECS
-        mv -v rpmbuild/SPECS/postfix_bexporter.spec.tpl rpmbuild/SPECS/postfix_bexporter.spec
+        cp -v "postfix_bexporter.spec.tpl" /home/runner/rpmbuild/SPECS
+        mv -v /home/runner/rpmbuild/SPECS/postfix_bexporter.spec.tpl /home/runner/rpmbuild/SPECS/postfix_bexporter.spec
         
         sed -i"" \
           -e "s/__VERSION__/${version}/" \
-          -e "s/__SOURCE_TARGZ_FILENAME__/$(pwd)/rpmbuild/SPECS/postfix_bexporter-${version}.tar.gz/" \
-          rpmbuild/SPECS/postfix_bexporter.spec
+          -e "s/__SOURCE_TARGZ_FILENAME__/postfix_bexporter-${version}.tar.gz/" \
+          /home/runner/rpmbuild/SPECS/postfix_bexporter.spec
+        
+        cat .changelog >> /home/runner/rpmbuild/SPECS/postfix_bexporter.spec
+        cat -n /home/runner/rpmbuild/SPECS/postfix_bexporter.spec
 
-        cp -v "postfix_bexporter-${version}.tar.gz" rpmbuild/SOURCES
-
-        cat .changelog >> rpmbuild/SPECS/postfix_bexporter.spec
-        cat -n rpmbuild/SPECS/postfix_bexporter.spec
+        cp -v "postfix_bexporter-${version}.tar.gz" /home/runner/rpmbuild/SOURCES
 
         pwd
         ls -la /home/runner/rpmbuild/SOURCES/postfix_bexporter-1.0.2.tar.gz
-        ls -la rpmbuild/SOURCES/postfix_bexporter-1.0.2.tar.gz
 
+        cd /home/runner
         rpmbuild -vba "rpmbuild/SPECS/postfix_bexporter.spec"
