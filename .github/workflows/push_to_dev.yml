@@ -46,7 +46,7 @@ jobs:
         current_tag=${described_parts[0]}
         
         changelog_filename=".changelog"
-        changelog_filename=".release_changelog"
+        release_changelog_filename=".release_changelog"
         echo "current_tag=${current_tag}"
 
         echo "Listing current changes..."
