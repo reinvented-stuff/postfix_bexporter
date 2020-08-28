@@ -26,11 +26,13 @@ Alternatively you can manually download and copy `reinvented-stuff.repo` file in
 <details>
 	<summary>Adding Reinvented Stuff Yum repository</summary>
 
+```
 $ sudo yum-config-manager --add-repo https://yum.reinvented-stuff.com/rhel/7/reinvented-stuff.repo
 Loaded plugins: fastestmirror
 adding repo from: https://yum.reinvented-stuff.com/rhel/7/reinvented-stuff.repo
 grabbing file https://yum.reinvented-stuff.com/rhel/7/reinvented-stuff.repo to /etc/yum.repos.d/reinvented-stuff.repo
 repo saved to /etc/yum.repos.d/reinvented-stuff.repo
+```
 
 </details>
 
