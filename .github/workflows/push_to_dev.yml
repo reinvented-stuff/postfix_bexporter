@@ -2,17 +2,19 @@ name: Bash
 
 on:
   push:
-    branches: [ master ]
+    branches: [ dev ]
 
 jobs:
 
   build:
-    name: Build master branch
+    name: Build dev branch
     runs-on: ubuntu-latest
     steps:
 
     - name: Check out code
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
     - name: Check if .version file exists
       run: if [[ -f .version ]]; then exit 0; else exit 2; fi
@@ -36,7 +38,7 @@ jobs:
       run: make build
 
     - name: Generate changelog
-      id: generate_changelog
+      id: genchangelog
       shell: bash
       run: |
         echo "Checking tags..."
@@ -59,13 +61,13 @@ jobs:
         
         echo "Changelog file..."
         cat .changelog
-        echo "::set-output name=changelog_file::${changelog_filename}"
+        echo "::set-output name=changelog::$(cat "${changelog_filename}")"
 
     - name: Display changelog
-      run: echo "${{ steps.generate_changelog.outputs.changelog }}"
+      run: echo "${{ steps.genchangelog.outputs.changelog }}"
 
     - name: Setup RPM Build environment
-      id: setup_rpmbuild_env
+      id: setuprpmbuildenv
       shell: bash
       run: |
 
@@ -98,67 +100,14 @@ jobs:
 
         cp -v "postfix_bexporter-${version}.tar.gz" /home/runner/rpmbuild/SOURCES
 
-    - name: Build RPM package
-      id: build_rpm_package
+    - name: Build RPM packages
+      id: buildrpmpackages
       shell: bash
       run: |
         cd /home/runner
         rpmbuild -v -ba "rpmbuild/SPECS/postfix_bexporter.spec"
 
-    - name: Verify RPM package
-      id: verify_rpm_package
+    - name: Verifying RPM file exists
       run: |
         version="$(cat .version)"
         ls -la /home/runner/rpmbuild/RPMS/x86_64/postfix_bexporter-${version}-1.x86_64.rpm
-        echo "::set-output name=path_to_rpm_file::/home/runner/rpmbuild/RPMS/x86_64/postfix_bexporter-${version}-1.x86_64.rpm"
-        echo "::set-output name=rpm_filename::postfix_bexporter-${version}-1.x86_64.rpm"
-
-
-    - name: Create a new tag
-      run: |
-        curl --request POST --url https://api.github.com/repos/${{ github.repository }}/git/tags \
-        -H 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-        -H 'content-type: application/json' \
-        --data '{"tag": "${{steps.readversionfile.outputs.desiredversion}}",
-          "message": "Pipeline build tag",
-          "object": "${{ github.sha }}",
-          "type": "commit",
-          "tagger": {
-            "name": "Alice from Wonderland",
-            "email": "noreply@localhost.localdomain",
-            "date": "${{steps.timestamp.outputs.timestamp}}"
-          }'
-
-    - name: Create a Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{steps.readversionfile.outputs.desiredversion}}
-        release_name: Release ${{steps.readversionfile.outputs.desiredversion}}
-        body: |
-          Automatically generated release
-          ${{steps.generate_changelog.outputs.changelog}}
-        draft: false
-        prerelease: false
-
-    - name: Upload a Release Asset (postfix_bexporter.sh)
-      uses: actions/upload-release-asset@v1.0.2
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./postfix_bexporter-${{ steps.readversionfile.outputs.desiredversion }}/postfix_bexporter.sh
-        asset_name: postfix_bexporter.sh
-        asset_content_type: application/octet-stream
-
-    - name: Upload a Release Asset (RPM package)
-      uses: actions/upload-release-asset@v1.0.2
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ steps.verify_rpm_package.outputs.path_to_rpm_file }}
-        asset_name: ${{ steps.verify_rpm_package.outputs.rpm_filename }}
-        asset_content_type: application/octet-stream

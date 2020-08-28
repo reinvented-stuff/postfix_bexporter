@@ -4,11 +4,9 @@ Release:        1%{?dist}
 Summary:        A reinvented Postfix metrics exporter
 
 License:        MIT
-URL:            https://0123e.ru/postfix_bexporter
+URL:            https://reinvented-stuff.com/postfix_bexporter
 Source0:        __SOURCE_TARGZ_FILENAME__
 
-BuildRequires:  
-Requires:       
 
 %description
 postfix_bexporter is a Prometheus metrics exporter,
@@ -20,8 +18,7 @@ limited functionality.
 
 
 %build
-%configure
-make %{?_smp_mflags}
+make %{?_smp_mflags} build
 
 
 %install
@@ -37,4 +34,3 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-__CHANGELOG__
