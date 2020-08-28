@@ -36,11 +36,11 @@ repo saved to /etc/yum.repos.d/reinvented-stuff.repo
 
 ### Install package using yum
 
-After the repo is 
 
 <details>
 	<summary>Installing package</summary>
 
+```
 $ sudo yum install postfix_bexporter
 Loaded plugins: fastestmirror
 Determining fastest mirrors
@@ -87,6 +87,7 @@ Installed:
   postfix_bexporter.x86_64 0:1.0.3-1                                                     
 
 Complete!
+```
 
 </details>
 
