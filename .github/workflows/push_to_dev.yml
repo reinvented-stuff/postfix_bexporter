@@ -70,7 +70,6 @@ jobs:
       id: setuprpmbuildenv
       shell: bash
       run: |
-        set +e
 
         version="$(cat .version)"
         sudo apt-get update
@@ -88,8 +87,6 @@ jobs:
         mkdir -pv /home/runner/rpmbuild/SPECS
         mkdir -pv /home/runner/rpmbuild/SRPMS
         
-        ls -la
-        
         cp -v "postfix_bexporter.spec.tpl" /home/runner/rpmbuild/SPECS
         mv -v /home/runner/rpmbuild/SPECS/postfix_bexporter.spec.tpl /home/runner/rpmbuild/SPECS/postfix_bexporter.spec
         
@@ -103,8 +100,14 @@ jobs:
 
         cp -v "postfix_bexporter-${version}.tar.gz" /home/runner/rpmbuild/SOURCES
 
-        pwd
-        ls -la /home/runner/rpmbuild/SOURCES/postfix_bexporter-1.0.2.tar.gz
-
+    - name: Build RPM packages
+      id: buildrpmpackages
+      shell: bash
+      run: |
         cd /home/runner
         rpmbuild -v -ba "rpmbuild/SPECS/postfix_bexporter.spec"
+
+    - name: Verifying RPM file exists
+      run: |
+        version="$(cat .version)"
+        ls -la /home/runner/rpmbuild/RPMS/x86_64/postfix_bexporter-${version}-1.x86_64.rpm
