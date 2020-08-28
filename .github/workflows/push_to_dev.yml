@@ -92,6 +92,6 @@ jobs:
           -e "s/__SOURCE_TARGZ_FILENAME__/postfix_bexporter-$(cat .version)/" \
           rpmbuild/SPECS/postfix_bexporter.spec
 
-        cat .changelog >> SPECS/postfix_bexporter.spec
+        cat .changelog >> rpmbuild/SPECS/postfix_bexporter.spec
         
-        rpmbuild -ba "SPECS/${specFile}"
+        rpmbuild -ba "rpmbuild/SPECS/postfix_bexporter.spec"
