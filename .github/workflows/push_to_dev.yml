@@ -81,12 +81,10 @@ jobs:
         mkdir rpmbuild
         mkdir -pv rpmbuild/BUILD rpmbuild/BUILDROOT rpmbuild/RPMS rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SRPMS
         
-        ls -laR
+        ls -la
         
         cp -v "postfix_bexporter.spec.tpl" rpmbuild/SPECS
         mv -v rpmbuild/SPECS/postfix_bexporter.spec.tpl rpmbuild/SPECS/postfix_bexporter.spec
-        
-        ls -laR
         
         sed -i"" \
           -e "s/__VERSION__/${version}/" \
@@ -96,5 +94,7 @@ jobs:
         cp -v "postfix_bexporter-${version}.tar.gz" rpmbuild/SOURCES
 
         cat .changelog >> rpmbuild/SPECS/postfix_bexporter.spec
-        
-        rpmbuild -ba "rpmbuild/SPECS/postfix_bexporter.spec"
+        cat -n rpmbuild/SPECS/postfix_bexporter.spec
+
+        ls -la /home/runner/rpmbuild/SOURCES/postfix_bexporter-1.0.2.tar.gz
+        rpmbuild -vba "rpmbuild/SPECS/postfix_bexporter.spec"
