@@ -70,8 +70,8 @@ jobs:
       id: setuprpmbuildenv
       shell: bash
       run: |
-        apt-get update
-        apt-get install rpm
+        sudo apt-get update
+        sudo apt-get install rpm
 
         make build
         make compress
