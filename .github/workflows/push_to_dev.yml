@@ -65,3 +65,26 @@ jobs:
 
     - name: Display changelog
       run: echo "${{ steps.genchangelog.outputs.changelog }}"
+
+    - name: Setup RPM Build environment
+      id: setuprpmbuildenv
+      shell: bash
+      run: |
+        apt-get update
+        apt-get install rpm
+
+        make build
+        make compress
+
+        # rpmdev-setuptree
+        mkdir -v BUILD  BUILDROOT  RPMS  SOURCES  SPECS  SRPMS
+        cp -v "postfix_bexporter.spec.tpl" SPECS/postfix_bexporter.spec
+        
+        sed -i"" \
+          -e "s/__VERSION__/$(cat .version)/" \
+          -e "s/__SOURCE_TARGZ_FILENAME__/postfix_bexporter-$(cat .version)/" \
+          SPECS/postfix_bexporter.spec
+
+        cat .changelog >> SPECS/postfix_bexporter.spec
+        
+        rpmbuild -ba "SPECS/${specFile}"

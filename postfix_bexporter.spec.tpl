@@ -20,8 +20,7 @@ limited functionality.
 
 
 %build
-%configure
-make %{?_smp_mflags}
+make %{?_smp_mflags} build
 
 
 %install
@@ -37,4 +36,3 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-__CHANGELOG__
