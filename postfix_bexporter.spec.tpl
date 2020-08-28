@@ -7,8 +7,6 @@ License:        MIT
 URL:            https://0123e.ru/postfix_bexporter
 Source0:        __SOURCE_TARGZ_FILENAME__
 
-BuildRequires:  
-Requires:       
 
 %description
 postfix_bexporter is a Prometheus metrics exporter,
