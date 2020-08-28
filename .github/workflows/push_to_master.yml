@@ -13,6 +13,8 @@ jobs:
 
     - name: Check out code
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
     - name: Check if .version file exists
       run: if [[ -f .version ]]; then exit 0; else exit 2; fi
@@ -39,27 +41,31 @@ jobs:
       id: generate_changelog
       shell: bash
       run: |
-        echo "Checking tags..."
-        git branch
-        git tag
-        git describe --tags
-        
         described=$(git describe --tags)
         described_parts=( ${described//-/ } )
         current_tag=${described_parts[0]}
         
         changelog_filename=".changelog"
+        release_changelog_filename=".release_changelog"
         echo "current_tag=${current_tag}"
-
-        echo "Listing all changes..."
-        git log --format=%B | sort -u
 
         echo "Listing current changes..."
         git log --pretty=oneline --format='%w(1000)* %cd %an <%ae>%n%w(60,0,2)- %s%n' --date="format:%a %b %d %Y" "$current_tag"..HEAD | tee "${changelog_filename}"
+        git log --pretty=oneline --format='%w(1000)**%cd %an <%ae>**%n%w(60,0,2)- %s%n' --date="format:%a %b %d %Y" "$current_tag"..HEAD | tee "${release_changelog_filename}"
         
         echo "Changelog file..."
         cat .changelog
-        echo "::set-output name=changelog_file::${changelog_filename}"
+
+        echo "Preparing a GitHub Release Changelog"
+        cat << EOF > "${release_changelog_filename}"
+        Automatically generated release with assets.
+
+        Changelog:
+        $(cat "${release_changelog_filename}")
+        EOF
+
+        echo "::set-output name=changelog_filename::${changelog_filename}"
+        echo "::set-output name=release_changelog_filename::${release_changelog_filename}"
 
     - name: Display changelog
       run: echo "${{ steps.generate_changelog.outputs.changelog }}"
@@ -93,7 +99,7 @@ jobs:
           -e "s/__SOURCE_TARGZ_FILENAME__/postfix_bexporter-${version}.tar.gz/" \
           /home/runner/rpmbuild/SPECS/postfix_bexporter.spec
         
-        cat .changelog >> /home/runner/rpmbuild/SPECS/postfix_bexporter.spec
+        cat "${{steps.generate_changelog.outputs.changelog_filename}}" >> /home/runner/rpmbuild/SPECS/postfix_bexporter.spec
         cat -n /home/runner/rpmbuild/SPECS/postfix_bexporter.spec
 
         cp -v "postfix_bexporter-${version}.tar.gz" /home/runner/rpmbuild/SOURCES
@@ -137,9 +143,7 @@ jobs:
       with:
         tag_name: ${{steps.readversionfile.outputs.desiredversion}}
         release_name: Release ${{steps.readversionfile.outputs.desiredversion}}
-        body: |
-          Automatically generated release
-          ${{steps.generate_changelog.outputs.changelog}}
+        body_path: ${{steps.generate_changelog.outputs.release_changelog_filename}}
         draft: false
         prerelease: false
 
