@@ -77,14 +77,20 @@ jobs:
         make compress
 
         # rpmdev-setuptree
-        mkdir -pv BUILD BUILDROOT RPMS SOURCES SPECS SRPMS
-        ls -la
-        cp -v "postfix_bexporter.spec.tpl" "SPECS/postfix_bexporter.spec"
+        mkdir rpmbuild
+        mkdir -pv rpmbuild/BUILD rpmbuild/BUILDROOT rpmbuild/RPMS rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SRPMS
+        
+        ls -laR
+        
+        cp -v "postfix_bexporter.spec.tpl" rpmbuild/SPECS
+        mv -v rpmbuild/SPECS/postfix_bexporter.spec.tpl rpmbuild/SPECS/postfix_bexporter.spec
+        
+        ls -laR
         
         sed -i"" \
           -e "s/__VERSION__/$(cat .version)/" \
           -e "s/__SOURCE_TARGZ_FILENAME__/postfix_bexporter-$(cat .version)/" \
-          SPECS/postfix_bexporter.spec
+          rpmbuild/SPECS/postfix_bexporter.spec
 
         cat .changelog >> SPECS/postfix_bexporter.spec
         
