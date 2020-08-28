@@ -13,9 +13,9 @@ Not available yet
 
 ## Install on RHEL/CentOS 7
 
-Yum repository URL: [https://yum.reinvented-stuff.com/rhel/7/](https://yum.reinvented-stuff.com/rhel/7/)
-Yum configuration: [reinvented-stuff.repo](https://yum.reinvented-stuff.com/rhel/7/reinvented-stuff.repo)
-GPG Public Key: [RPM-GPG-KEY-RNVSTFF-7](https://yum.reinvented-stuff.com/rhel/7/RPM-GPG-KEY-RNVSTFF-7)
+**Yum repository URL**: [https://yum.reinvented-stuff.com/rhel/7/](https://yum.reinvented-stuff.com/rhel/7/)  
+**Yum configuration**: [reinvented-stuff.repo](https://yum.reinvented-stuff.com/rhel/7/reinvented-stuff.repo)  
+**GPG Public Key**: [RPM-GPG-KEY-RNVSTFF-7](https://yum.reinvented-stuff.com/rhel/7/RPM-GPG-KEY-RNVSTFF-7)  
 
 ### Add Reinvented Stuff's Yum repository
 
