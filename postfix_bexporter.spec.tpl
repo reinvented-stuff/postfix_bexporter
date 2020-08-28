@@ -4,7 +4,7 @@ Release:        1%{?dist}
 Summary:        A reinvented Postfix metrics exporter
 
 License:        MIT
-URL:            https://0123e.ru/postfix_bexporter
+URL:            https://reinvented-stuff.com/postfix_bexporter
 Source0:        __SOURCE_TARGZ_FILENAME__
 
 

@@ -70,6 +70,8 @@ jobs:
       id: setuprpmbuildenv
       shell: bash
       run: |
+        set +e
+
         version="$(cat .version)"
         sudo apt-get update
         sudo apt-get install rpm
@@ -88,7 +90,7 @@ jobs:
         
         sed -i"" \
           -e "s/__VERSION__/${version}/" \
-          -e "s/__SOURCE_TARGZ_FILENAME__/postfix_bexporter-${version}.tar.gz/" \
+          -e "s/__SOURCE_TARGZ_FILENAME__/$(pwd)/rpmbuild/SPECS/postfix_bexporter-${version}.tar.gz/" \
           rpmbuild/SPECS/postfix_bexporter.spec
 
         cp -v "postfix_bexporter-${version}.tar.gz" rpmbuild/SOURCES
@@ -96,5 +98,8 @@ jobs:
         cat .changelog >> rpmbuild/SPECS/postfix_bexporter.spec
         cat -n rpmbuild/SPECS/postfix_bexporter.spec
 
+        pwd
         ls -la /home/runner/rpmbuild/SOURCES/postfix_bexporter-1.0.2.tar.gz
+        ls -la rpmbuild/SOURCES/postfix_bexporter-1.0.2.tar.gz
+
         rpmbuild -vba "rpmbuild/SPECS/postfix_bexporter.spec"
