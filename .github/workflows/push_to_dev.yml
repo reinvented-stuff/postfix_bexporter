@@ -57,7 +57,7 @@ jobs:
         git log --format=%B | sort -u
 
         echo "Listing current changes..."
-        git log --format=%B "$current_tag"..HEAD | sort -u | tee "${changelog_filename}"
+        git log --pretty=oneline --format='%w(1000)**%h**%n* %cd %an <%ae>%n%w(60,0,2)- %s%n' --date="format:%a %b %d %Y" "$current_tag"..HEAD | tee "${changelog_filename}"
         
         echo "Changelog file..."
         cat .changelog
