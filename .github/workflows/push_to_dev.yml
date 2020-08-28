@@ -107,4 +107,4 @@ jobs:
         ls -la /home/runner/rpmbuild/SOURCES/postfix_bexporter-1.0.2.tar.gz
 
         cd /home/runner
-        rpmbuild -vba "rpmbuild/SPECS/postfix_bexporter.spec"
+        rpmbuild -v -ba "rpmbuild/SPECS/postfix_bexporter.spec"
